@@ -20,8 +20,8 @@ app = Flask(__name__)
 #app.config["SECRET_KEY"] = 'VMLMABVC'  # development
 app.config["SECRET_KEY"] = os.environ.get('FLASK_KEY')  # production
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
-#app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///crm.db"  # development
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///crm.db")  #production
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///crm.db"  # development
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///crm.db")  #production
 
 
 
