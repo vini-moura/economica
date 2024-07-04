@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title%} Adicionar Ativo {%endblock%}
+{% block content %}
+<div id="ativo">
+    <form method="post">
+    <br>
+    <h4> Tesouro Direto </h4>
+    <table class="table w-100">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Nome</th>
+                <th>Vencimento</th>
+                <th>Tx. Juros</th>
+                <th>Adicionar?</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for papel in titulos %}
+            <tr>
+                <td>{{ papel.tipo_titulo}}</td>
+                <td>{{ papel.emissor }}</td>
+                <td>{{ papel.data_vencimento}}</td>
+                <td>{{ papel.taxa_juros}}</td>
+                <td><input type="checkbox" name="record_tesouro" value="{{papel.id}}"></select></td>
+                <td><input name="qtd_titulos_{{papel.id}}" ></td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    <input class="btn btn-success" type="submit" value="Cadastrar">
+    </form>
+</div>
+{%endblock%}

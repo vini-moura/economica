@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title%} Monitorar OKR {%endblock%}
+{% block content%}
+<div id="content">
+    <form action="{{url_for('atualizar_okr')}}" method="post">
+        <input type="hidden" name="kr_id" value=" {{kr.id_kr}}">
+        <label class="form-label">KR:</label>
+        <input type="text" class="form-control" name="kr_texto" value="{{ kr.texto }}">
+        <br>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Meta:</label>
+                <input type="number" class="form-control" name="kr_meta" value="{{ kr.meta }}">
+            </div>
+            <div class="col">
+                <label class="form-label">Valor Atual: {{ kr.atual }} </label>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-8">
+                <div class="">
+                    <label class="form-label">Problema/Progresso/Plano</label>
+                    <textarea class="form-control" rows="3" name="ppp"></textarea>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="">
+                    <label class="form-label">Novo Valor:</label>
+                    <textarea class="form-control"  rows="1" name="novo_valor"></textarea>
+                </div>
+            </div>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Atualizar</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html"%}
+{% block title%}Cadastrar Novo Cliente{%endblock%}
+{% block content%}
+        <h1>Cadastro de Novo Cliente</h1>
+        <form method="post" class="form-container">
+            <br>
+        <div class="container">
+            <div class="box">
+                <label>Nome:</label>
+                <input type="text" id="nome" name="nome" class="full-width"><br>
+                <br>
+                <label>Email:</label>
+                <input type="email" id="email" name="email" class="full-width"><br>
+                <br>
+                <label>Endereço:</label>
+                <input type="text" id="endereco" name="endereco" class="full-width"><br>
+                <br>
+                <label>Valor Estimado:</label>
+                <input type="number" step="0.1" id="valor_estimado" name="valor_estimado"><br>
+                <br>
+                <label>Perfil de investimento:</label>
+                <select name="perfil">
+                    <option value="1">Conservador</option>
+                    <option value="2">Moderado</option>
+                    <option value="3">Arrojado</option>
+                </select><br>
+                <br>
+                <label for="cliente_desde">Cliente Desde (Início):</label>
+                <input type="date" id="cliente_desde" name="cliente_desde"><br>
+                <br>
+                <label for="abertura_conta">Abertura da Conta:</label>
+                <input type="date" id="abertura_conta" name="abertura_conta"><br>
+                <br>
+            </div>
+            <div class="box">
+                <label>PJ:</label>
+                <select id="pj" name="pj">
+                    <option value="0">Não</option>
+                    <option value="1">Sim</option>
+                </select><br>
+                <br>
+                <label>Telefone:</label>
+                <input type="tel" id="telefone" name="telefone"><br>
+                <br>
+                <label>Conta:</label>
+                <input type="text" id="conta" name="conta"><br>
+                <br>
+                <label>Valor Atual:</label>
+                <input type="number" step="0.01" id="valor_atual" name="valor_atual"><br>
+                <br>
+                {% for message in get_flashed_messages(category_filter=["error"]) %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                <label>Código da Bolsa:</label>
+                <input id="cod_bolsa" name="cod_bolsa" ><br>
+                <br>
+                <label>Fechamento do Negócio:</label>
+                <input type="date" id="fechamento_negocio" name="fechamento_negocio"><br>
+            </div>
+
+            <input class="btn btn-success" type="submit" value="Cadastrar">
+            <script src="/static/js/validacoes.js" defer></script>
+        </div>
+        </form>
+    </div>
+</div>
+{%endblock%}

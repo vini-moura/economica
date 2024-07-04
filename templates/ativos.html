@@ -1,0 +1,53 @@
+{% extends "base.html"%}
+{% block title%}Tarefas do Cliente{%endblock%}
+{% block content%}
+    <!-- Page Content -->
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="m-2" id="rowtext ">
+                    <h3>{{user_name}}</h3>
+                    <h6>{{user_time}}</h6>
+                </div>
+            </div>
+        </nav>
+        <br>
+        <br>
+
+        <!--Clientes-->
+        <div class="container">
+            <h2>Adicionar Ativo no DB</h2>
+            <form action="{{ url_for('ativos') }}" method="post">
+                <label for="tipoAtivo">Tipo de Ativo</label>
+                <select class="form-control" id="tipoAtivo" name="tipo_ativo" required>
+                    <option value="">Selecione...</option>
+                    <option value="Títulos">Tesouro Direto</option>
+                    <option value="Criptomoedas">CDB</option>
+                    <option value="Criptomoedas">LCI/LCA</option>
+                    <option value="Criptomoedas">CRI/CRA</option>
+                    <option value="Criptomoedas">Debênture</option>
+                    <option value="Ações">COE</option>
+                    <option value="Ações">Fundo</option>
+                    <option value="Ações">FII</option>
+                    <option value="Ações">Ações</option>
+                    <option value="Ações">estruturada</option>
+                    <option value="Ações">Previdência</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <br>
+
+                <label for="nomeAtivo">Nome do Ativo</label>
+                <input type="text" class="form-control" id="nomeAtivo" name="nome_ativo" placeholder="Ex: XYZ Corp" required>
+
+                <label for="valorInvestido">Valor Investido</label>
+                <input type="number" class="form-control" id="valorInvestido" name="valor_investido" step="1.0" placeholder="0.00" required>
+
+                <label for="descricaoAtivo">Observações</label>
+                <textarea class="form-control" id="descricaoAtivo" name="descricao" rows="3"></textarea>
+                <button type="submit" class="btn btn-primary">Adicionar Ativo</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

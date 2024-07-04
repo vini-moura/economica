@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Monitorar Tarefas{% endblock %}
+{% block content %}
+<!--Tarefas-->
+<br>
+<div class="" id="">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Cliente</th>
+                <th scope="col">Tarefa</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Prioridade</th>
+                <th scope="col">Prazo</th>
+                <th scope="col">Status</th>
+                <th scope="col">Observação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tarefa in tarefas %}
+            <tr>
+                <td><a href="{{ url_for('sessiondid', did=tarefa.id, route='tarefas') }}"> {{ tarefa.nome_cliente }} </a></td>
+                <td>{{ tarefa.tarefa }}</td>
+                <td>{{ tarefa.tipo }}</td>
+                <td>{{ tarefa.prioridade }}</td>
+                <td>{{ tarefa.prazo }}</td>
+                <td>{{ tarefa.status }}</td>
+                <td>{{ tarefa.observacao }}</td>
+                <td><a href="{{ url_for('sessiondid', did=tarefa.id, route='editar_tarefa') }}" class="btn btn-primary">Editar</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

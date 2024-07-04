@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title%} Monitorar OKR {%endblock%}
+{% block content%}
+<!--OKR-->
+<div class="accordion" id="">
+    {% for okr in okr %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              {{ okr.texto }}
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <table class="table" >
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th scope="col">kr</th>
+                            <th scope="col">Inicial</th>
+                            <th scope="col">Meta</th>
+                            <th scope="col">Atual</th>
+                            <th scope="col">%</th>
+                            <th scope="col">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for kr in krs %}
+                        {% if kr.id_obj == okr.id %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ kr.texto }}</td>
+                            <td>{{ kr.inicial }}</td>
+                            <td>{{ kr.meta }}</td>
+                            <td>{{ kr.atual }}</td>
+                            <td>{{ kr.porcentagem }}</td>
+                            <td><a href="{{ url_for('sessiondid', did=kr.id_kr, route='atualizar_okr') }}">Atualizar</a></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <br>
+    <a href="{{ url_for('cadastrar_okr') }}" class="btn btn-success">Cadastrar OKR</a>
+</div>
+
+{% endblock %}

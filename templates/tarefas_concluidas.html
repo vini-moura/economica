@@ -1,0 +1,55 @@
+{% extends "base.html"%}
+{% block title%}Tarefas Concluidas{%endblock%}
+{% block content%}
+<br>
+<div class="" id="">
+    <h3 style="text-align: center;">Tarefas Concluídas</h3>
+    <h5 style="text-align: center;">Cliente: {{ cliente.nome }}</h5>
+    <br>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th>Tarefa</th>
+                        <th>Tipo</th>
+                        <th>Prioridade</th>
+                        <th>Prazo</th>
+                        <th>Status</th>
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tarefa in tarefa %}
+                    <tr>
+                        <td>{{ tarefa.tarefa }}</td>
+                        <td>{{ tarefa.tipo }}</td>
+                        <td>{{ tarefa.prioridade }}</td>
+                        <td>{{ tarefa.prazo }}</td>
+                        <td>{{ tarefa.status }}</td>
+                        <td><a href="{{url_for('editar_tarefa', id=tarefa.id)}}">Editar</a></td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </li>
+    </ul>
+    <div style="margin-top: 20px;">
+       <a href="{{ url_for('sessiondid', did =did, route='adicionar_tarefa') }}" class="btn btn-success">Adicionar Tarefa</a>
+       <a href="{{ url_for('sessiondid', did =did,route='tarefas_concluidas') }}" class="btn btn-success">Tarefas Concluídas</a>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+
+    <div class="editar-dados-cliente" style="margin-top: 20px;">
+        <a href="{{ url_for('editar_cliente', did=did) }}" class="btn btn-warning">Editar Dados do Cliente</a>
+    </div>
+    <br>
+    <br>
+
+</div>
+{%endblock%}

@@ -1,0 +1,42 @@
+{% extends "base.html"%}
+{% block title%} Tarefas da Mesa {%endblock%}
+{% block content%}
+<br>
+<div class="" id="">
+    <h5>Tarefas</h5>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th>Tarefa</th>
+                        <th>Tipo</th>
+                        <th>Prioridade</th>
+                        <th>Prazo</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tarefa in tarefas %}
+                    <tr>
+                        <td>{{ tarefa.tarefa }}</td>
+                        <td>{{ tarefa.tipo }}</td>
+                        <td>{{ tarefa.prioridade }}</td>
+                        <td>{{ tarefa.prazo }}</td>
+                        <td>{{ tarefa.status }}</td>
+                        <td><a href="{{url_for('editar_tarefa', id=tarefa.id)}}">Editar</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </li>
+    </ul>
+    <div style="margin-top: 20px;">
+       <a href="{{ url_for('tarefas_concluidas_mesa') }}" class="btn btn-success">Tarefas Concluídas</a>
+    </div>
+    <hr>
+    <br>
+
+</div>
+{%endblock%}

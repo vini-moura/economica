@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title%}Monitorar Clientes {%endblock%}
+{% block content%}
+<!--Clientes-->
+<div class="" id="">
+    <table class="table" >
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Status</th>
+                <th scope="col">Prioridade</th>
+                <th scope="col">Valor Estimado</th>
+                <th scope="col">Valor Atual</th>
+                <th scope="col">Cliente desde</th>
+                <th scope="col">telefone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+              <td><a href="{{ url_for('sessiondid', did=cliente.id, route='tarefas') }}"> {{ cliente.nome }} </a></td>
+              <td>{{ cliente.status }}</td>
+              <td>{{ cliente.prioridade }}</td>
+              <td>{{ cliente.valor_estimado }}</td>
+              <td>{{ cliente.valor_atual }}</td>
+              <td>{{ cliente.inicio }} </td>
+              <td>{{ cliente.telefone }}</td>
+              <td><a href="{{ url_for('sessiondid', did=cliente.id, route='tarefas') }}" class="btn btn-primary">Atualizar</a></td>
+            </tr>
+            {% endfor %}
+            <br>
+
+        </tbody>
+    </table>
+</div>
+{%endblock%}
+

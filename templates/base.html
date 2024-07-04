@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} CRM com OKR {% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/style4.css">
+</head>
+<body>
+    <div class="wrapper" >
+        <!-- Sidebar-->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <img src="ic/images/Logo_CNPartners_JPG_RBG-41.jpg" alt="Logo CN-Partners" class="img-fluid">
+                <strong>TS</strong>
+            </div>
+            <hr>
+            <ul class="list-unstyled components">
+                <li> <a href="{{url_for('okr')}}"><i class="fa fa-line-chart"></i>Monitorar OKR</a></li>
+                <li> <a href="{{url_for('monitorar_tarefas')}}"><i class="fa fa-line-chart"></i>Monitorar Tarefas</a></li>
+                <li> <a href="{{url_for('monitorar')}}"> <i class="fa fa-bar-chart"></i> Monitorar Clientes </a>  </li>
+                {% if mesa == 1: %}
+                <li> <a href="{{url_for('tarefas_mesa')}}"> <i class="fa fa-paper-plane"></i> Tarefas da Mesa </a> </li>
+                {% endif%}
+                <li>  <a href={{url_for('cadastrar')}}> <i class="fa fa-copy"></i> Cadastrar Cliente </a>  </li>
+                <li>  <a href="{{url_for('perfil')}}">  <i class="fa fa-user-circle-o"></i>  Perfil  </a>  </li>
+                <li>  <a href="{{ url_for('logout') }}"> <i class="fa fa-sign-out"></i> Sair </a> </li>
+            </ul>
+        </nav>
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <div class="m-2" id="rowtext ">
+                        <h3>{{user_name}}</h3>
+                        <h6>{{user_time}}</h6>
+                    </div>
+                </div>
+            </nav>
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+
+  <!-- Bootstrap e JavaScript -->
+  <script src="{‌{ url_for('static', filename='vendor/jquery/jquery.min.js')}}"></script>
+  <script src="{‌{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{‌{ url_for('static', filename='js/validacoes.js')}}"></script>
+  <script src="{‌{ url_for('static', filename='js/clean-blog.min.js')}}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title%} Cadastrar KR {%endblock%}
+{% block content%}
+
+      <!-- Page Content -->
+
+         <form  method="POST" action="{{ url_for('cadastrarkr')}}">
+            {% for i in range(n_krs) %}
+            <input type="hidden" name="n_krs" value="{{n_krs}}">
+            <hr>
+            <h5>Kr nº {{ i+1 }}</h5>
+            <br>
+            <div class="row">
+               <div class="col-md-6">
+                  <label class="form-label">Digite o texto do novo KR:</label>
+                  <input type="text" name="texto_{{i}}" class="form-control">
+               </div>
+               <div class="col-md-6">
+                  <label class="form-label">Selecione o Tipo de KR</label>
+                  <select id="tipo" name="tipo_{{i}}" class="form-select" aria-label="Default select example">
+                      <option value="1">Aumentar</option>
+                      <option value="2">Diminuir</option>
+                  </select>
+               </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Digite o valor inicial do novo KR:</label>
+                    <input type="text" name="valor_inicial_{{i}}" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Selecione a unidade de medida</label>
+                    <select id="uni_med" name="uni_med_{{i}}" class="form-select" aria-label="Default select example">
+                        <option value="1">Inteiro</option>
+                        <option value="2">porcentagem</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-6">
+                     <label class="form-label">Digite a meta do novo KR:</label>
+                     <input type="text" name="meta_{{i}}" class="form-control">
+                </div>
+            </div>
+            <br>
+            {% endfor %}
+            <hr>
+            <button id="btn_submit" type="submit" class="btn btn-primary">Submit</button>
+          </form>
+      </div>
+  </div>
+
+{% endblock %}
+
+
+
