@@ -42,8 +42,7 @@ def home():
 def register():
     if request.method == "POST":
         email = request.form.get('email')
-        result = db.session.execute(db.select(User).where(User.email == email))
-        user = result.scalar()
+        user = db.session.execute(db.select(User).where(User.email == email)).scalar()
         if user:
             flash("Email já cadastrado, faça o login")
             return redirect(url_for('login'))
@@ -52,20 +51,42 @@ def register():
             method='pbkdf2:sha256',
             salt_length=8
         )
-        new_user = User(
-            email=request.form.get('email'),
-            password=hash_and_salted_password,
-            name=request.form.get('name'),
-            admin=request.form.get('admin'),
-            mesa=request.form.get('mesa')
-        )
-        db.session.add(new_user)
-        db.session.commit()
+        time_user = request.form.get("time")
+        time = db.session.execute(db.select(Times).where(Times.nome == time_user)).scalar()
+
+        if time is None:
+            new_time = Times(
+                time=time
+            )
+            db.session.add(new_time)
+            new_user = User(
+                email=request.form.get('email'),
+                password=hash_and_salted_password,
+                name=request.form.get('name'),
+                admin=request.form.get('admin'),
+                mesa=request.form.get('mesa'),
+                id_time=new_time.id,
+                time=new_time.time
+            )
+            db.session.add(new_user)
+            db.session.commit()
+        else:
+            new_user = User(
+                email=request.form.get('email'),
+                password=hash_and_salted_password,
+                name=request.form.get('name'),
+                admin=request.form.get('admin'),
+                mesa=request.form.get('mesa'),
+                id_time=time.id,
+                time=time.time
+            )
+            db.session.add(new_user)
+            db.session.commit()
         login_user(new_user)
         session['user_id'] = new_user.id
         session["user_name"] = new_user.name
-        session['admin'] = new_user.admin
-        session['mesa'] = new_user.mesa
+        session['admin'] = user.admin
+        session['mesa'] = user.mesa
         return redirect(url_for("monitorar"))
     return render_template("register.html", logged_in=current_user.is_authenticated)
 
@@ -109,10 +130,11 @@ def monitorar():
     user_id = session.get('user_id')
     admin = session.get("admin")
     mesa = session.get("mesa")
-    print(mesa)
+
     result = db.session.execute(db.select(Clientes).where(Clientes.id_assessor == user_id))
     clientes = result.scalars()
     return render_template('monitorar.html', user_name=name, user_id=user_id, clientes=clientes, admin=admin, mesa=mesa)
+
 
 @app.route('/monitorar_tarefas', methods=["POST", "GET"])
 @login_required
@@ -239,7 +261,6 @@ def editar_tarefa():
         mesa = 1 if mesa == '1' else 0
 
         tarefa_to_update = db.session.execute(db.select(Tarefas).where(Tarefas.id == tid)).scalar()
-        tarefa_to_update.nome_cliente = request.form.get('nome')
         tarefa_to_update.tarefa = request.form.get('tarefa')
         tarefa_to_update.tipo = request.form.get('tipo')
         tarefa_to_update.prioridade = request.form.get('prioridade')
@@ -328,6 +349,120 @@ def perfil():
     return render_template("perfil.html", user_name=user_name, user=user)
 
 
+@app.route('/okr', methods=["POST", "GET"])
+@login_required
+def okr():
+    now = datetime.now()
+    current_year = now.year
+    current_quarter = (now.month - 1) // 3 + 1  # Calcula o trimestre atual
+    okr = db.session.execute(db.select(Okrs).where(Okrs.ano == current_year).where(Okrs.ciclo == current_quarter))
+    # okr = Okrs.query.filter_by(ano=current_year, ciclo=current_quarter)
+    okr = okr.scalars().all()
+
+    ids_objs = [i.id for i in okr]
+    krs = db.session.execute(db.select(Krs).where(Krs.id_obj.in_(ids_objs)))
+    krs = krs.scalars().all()
+    valores_atuais = [kr.atual for kr in krs]
+    if len(valores_atuais) > 0:
+        media_total = sum(valores_atuais) / len(valores_atuais)
+    else:
+        media_total = 0
+    name = session.get('user_name')
+    time = session.get('user_time')
+    return render_template('okr.html', okr=okr, krs=krs, media_total=media_total, user_name=name, user_time=time)
+
+
+@app.route("/atualizar_okr", methods=["GET", "POST"])
+def atualizar_okr():
+    if request.method == "POST":
+        id_kr = request.form.get('kr_id')
+        kr_texto = request.form.get('kr_texto')
+        kr_meta = float(request.form.get('kr_meta'))
+        ppp = request.form.get('ppp')
+        novo_valor = float(request.form.get('novo_valor'))
+
+        results = db.session.query(Krs).filter_by(id_kr=id_kr).first()
+        results.texto = kr_texto
+        results.meta = kr_meta
+        results.atual = novo_valor
+        db.session.commit()
+        return redirect(url_for('monitorar'))
+    name = session.get('user_name')
+    time = session.get('user_time')
+    id_kr = session.get('id_kr')
+    kr = db.session.execute(db.select(Krs).where(Krs.id_kr == id_kr)).scalar()
+    return render_template("atualizar_okr.html", kr=kr, user_name=name, user_time=time)
+
+
+@app.route('/cadastrar_okr', methods=["POST", "GET"])
+@login_required
+def cadastrar_okr():
+    if request.method == "POST":
+        id_time = 1  # session.get('id_time')
+        time = "CN Partners"  # session.get('time')
+        setor = 2
+        id_setor = 1
+        texto = request.form['texto']
+        ano = request.form['ano']
+        ciclo = request.form['ciclo']
+        novo = Okrs(id_time=id_time, time=time, id_setor=id_setor, setor=setor, texto=texto, ano=ano, ciclo=ciclo)
+        db.session.add(novo)
+        db.session.commit()
+        session['id_obj'] = novo.id
+        n_krs = int(request.form['n_krs'])
+        return redirect(url_for('cadastrarkr', nkr=n_krs))
+
+    user_id = session.get('user_id')
+    user = db.session.execute(db.select(User).where(User.id == user_id)).scalar()
+    setores = db.session.execute(db.select(Setores).where(Setores.id_time == user.id_time)).scalars()
+
+    return render_template("cadastrarokr.html", user_name=user.name, user_time=user.time, setores=setores)
+
+
+@app.route('/cadastrarkr', methods=["POST", "GET"])
+@login_required
+def cadastrarkr():
+    if request.method == "POST":
+        n_krs = int(request.form.get('n_krs'))
+        for i in range(n_krs):
+            tipo = request.form.get(f'tipo_{i}')
+            uni_med = request.form.get(f'uni_med_{i}')
+            valor_inicial = float(request.form.get(f'valor_inicial_{i}'))
+            print(valor_inicial)
+            valor_alterar = float(request.form.get(f'meta_{i}'))
+            meta = 0
+            if tipo == 1:
+                if uni_med == 1:
+                    meta = valor_inicial + valor_alterar
+                elif uni_med == 2:
+                    meta = valor_inicial * (1 + (valor_alterar / 100))
+            elif tipo == 2:
+                if uni_med == 1:
+                    meta = valor_inicial - valor_alterar
+                elif uni_med == 2:
+                    meta = valor_inicial * (1 - (valor_alterar / 100))
+            status = "novo"
+            novo_kr = Krs(
+                id_obj=session.get('id_obj'),
+                texto=request.form.get(f'texto_{i}'),
+                tipo=tipo,
+                un_medida=uni_med,
+                inicial=valor_inicial,
+                valor_alterar=valor_alterar,
+                meta=meta,
+                status=status,
+                atual=valor_inicial
+            )
+            db.session.add(novo_kr)
+            db.session.commit()
+        return redirect(url_for('okr'))
+
+    n_krs = int(request.args.get('nkr'))
+    nome = session.get('user_name')
+    time = session.get('user_time')
+    return render_template("cadastrarkr.html", n_krs=n_krs, nome=nome, time=time)
+
+
 @app.route('/verificar_conta')
 def verificar_conta():
     conta = request.args.get('conta')
@@ -350,7 +485,7 @@ def sessiondid(did, route):
         session['cliente_id'] = did
         return redirect(url_for('tarefas'))
     elif route == 'editar_tarefa':
-        #de tarefas para editar tarefa
+        # de tarefas para editar tarefa
         session['tarefa_id'] = did
         return redirect(url_for('editar_tarefa'))
     elif route == "adicionar_tarefa":
@@ -362,6 +497,9 @@ def sessiondid(did, route):
     elif route == 'editar_cliente':
         # de tarefas para editar cliente
         return redirect(url_for('editar_cliente'))
+    elif route == 'atualizar_okr':
+        session['id_kr'] = did
+        return redirect(url_for('atualizar_okr'))
 
 
 @app.errorhandler(401)
@@ -376,3 +514,4 @@ def unauthorized(error):
 
 if __name__ == "__main__":
     app.run(debug=True)
+    

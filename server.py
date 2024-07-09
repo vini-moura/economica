@@ -42,8 +42,7 @@ def home():
 def register():
     if request.method == "POST":
         email = request.form.get('email')
-        result = db.session.execute(db.select(User).where(User.email == email))
-        user = result.scalar()
+        user = db.session.execute(db.select(User).where(User.email == email)).scalar()
         if user:
             flash("Email já cadastrado, faça o login")
             return redirect(url_for('login'))
@@ -52,15 +51,37 @@ def register():
             method='pbkdf2:sha256',
             salt_length=8
         )
-        new_user = User(
-            email=request.form.get('email'),
-            password=hash_and_salted_password,
-            name=request.form.get('name'),
-            admin=request.form.get('admin'),
-            mesa=request.form.get('mesa')
-        )
-        db.session.add(new_user)
-        db.session.commit()
+        time_user = request.form.get("time")
+        time = db.session.execute(db.select(Times).where(Times.nome == time_user)).scalar()
+
+        if time is None:
+            new_time = Times(
+                time=time
+            )
+            db.session.add(new_time)
+            new_user = User(
+                email=request.form.get('email'),
+                password=hash_and_salted_password,
+                name=request.form.get('name'),
+                admin=request.form.get('admin'),
+                mesa=request.form.get('mesa'),
+                id_time=new_time.id,
+                time=new_time.time
+            )
+            db.session.add(new_user)
+            db.session.commit()
+        else:
+            new_user = User(
+                email=request.form.get('email'),
+                password=hash_and_salted_password,
+                name=request.form.get('name'),
+                admin=request.form.get('admin'),
+                mesa=request.form.get('mesa'),
+                id_time=time.id,
+                time=time.time
+            )
+            db.session.add(new_user)
+            db.session.commit()
         login_user(new_user)
         session['user_id'] = new_user.id
         session["user_name"] = new_user.name
@@ -109,7 +130,7 @@ def monitorar():
     user_id = session.get('user_id')
     admin = session.get("admin")
     mesa = session.get("mesa")
-    print(mesa)
+    
     result = db.session.execute(db.select(Clientes).where(Clientes.id_assessor == user_id))
     clientes = result.scalars()
     return render_template('monitorar.html', user_name=name, user_id=user_id, clientes=clientes, admin=admin, mesa=mesa)

@@ -17,8 +17,8 @@ from sqlalchemy.exc import IntegrityError
 
 
 app = Flask(__name__)
-#app.config["SECRET_KEY"] = 'VMLMABVC'  # development
-app.config["SECRET_KEY"] = os.environ.get('FLASK_KEY')  # production
+app.config["SECRET_KEY"] = 'VMLMABVC'  # development
+#app.config["SECRET_KEY"] = os.environ.get('FLASK_KEY')  # production
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///crm.db"  # development
 #app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///crm.db")  #production
@@ -34,7 +34,6 @@ db.init_app(app)
 bootstrap = Bootstrap4(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 class Clientes(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -93,6 +92,7 @@ class Okrs(db.Model):
     ano: Mapped[int] = mapped_column(Integer, nullable=False)
     ciclo: Mapped[int] = mapped_column(Integer, nullable=False)
 
+
 class Krs(db.Model):
     id_kr: Mapped[int] = mapped_column(Integer, primary_key=True)
     id_obj: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -104,6 +104,7 @@ class Krs(db.Model):
     meta: Mapped[float] = mapped_column(Float, nullable=False)
     status: Mapped[str] = mapped_column(String(250), nullable=False)
     atual: Mapped[float] = mapped_column(Float, nullable=False)
+
 
 class Times(db.Model):
     id: Mapped[str] = mapped_column(String(250), primary_key=True)
@@ -118,3 +119,6 @@ class Setores(db.Model):
 
 with app.app_context():
     db.create_all()
+
+
+
